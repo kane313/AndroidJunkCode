@@ -23,6 +23,7 @@ gradlePlugin {
 }
 
 mavenPublishing {
+    publishToMavenCentral()
     pom {
         developers {
             developer {
