@@ -29,4 +29,12 @@ NOTICE 是下游新增的来源说明，不是原作者提供的文件，也不�
 
 继续保留上游已有声明；修改上游文件时在文件内标明修改，新增变更同步记录在此。
 同步上游版本时检查是否新增 LICENSE、NOTICE 或其他归属声明，并保留适用内容。
-团队仓库、发布坐标和维护者联系方式尚未配置；本记录不虚构团队名称或版权归属。
+团队仓库为 `kane313/AndroidJunkCode`；本记录不虚构团队名称或版权归属。
+
+## 2026-11-02：Maven Central 发布配置
+
+- `library/build.gradle.kts`、`library/gradle.properties`：使用下游坐标 `io.github.kane313:android-junk-code:2.0.0-team.1`，插件 ID 为 `io.github.kane313.android-junk-code`；同时发布插件 marker。
+- POM 指向下游仓库，列出下游维护者与上游作者；保留 Apache-2.0 信息，启用签名。
+- 发布凭据及私钥仅存放于用户目录或环境变量，不纳入仓库。
+- `settings.gradle.kts`、`build.gradle.kts`：新增 `skipDemo` 开关并延迟 demo 插件解析，支持首次发布前构建。
+- `gradle/libs.versions.toml`：demo 引用下游插件；`docs/PUBLISHING.md`：记录安全凭据配置、发布与接入步骤。

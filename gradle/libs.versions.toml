@@ -1,3 +1,4 @@
+# Downstream modification, 2026-11-02: consume the fork plugin coordinate.
 [versions]
 agp = "9.0.0"
 javapoet = "1.13.0"
@@ -12,7 +13,7 @@ appcompat = "1.7.1"
 material = "1.13.0"
 activity = "1.12.4"
 constraintlayout = "2.2.1"
-junkCode = "2.0.0"
+junkCode = "2.0.0-team.1"
 #junkCode = "1.3.4"
 dexcount = "4.0.0"
 mavemPublish = "0.36.0"
@@ -34,7 +35,7 @@ androidx-constraintlayout = { group = "androidx.constraintlayout", name = "const
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-android-junk-code = { id = "io.github.qq549631030.android-junk-code", version.ref = "junkCode" }
+android-junk-code = { id = "io.github.kane313.android-junk-code", version.ref = "junkCode" }
 dexcount = { id = "com.getkeepsafe.dexcount", version.ref = "dexcount" }
 mavemPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavemPublish" }
 pluginPublish = { id = "com.gradle.plugin-publish", version.ref = "pluginPublish" }

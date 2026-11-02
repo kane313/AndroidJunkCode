@@ -8,3 +8,5 @@
 .externalNativeBuild
 .cxx
 /repo
+# Downstream modification, 2026-11-02: exclude local Kotlin compiler caches.
+.kotlin/

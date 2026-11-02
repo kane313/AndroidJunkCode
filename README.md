@@ -16,7 +16,7 @@
 
 ## 方法模板选择（源码版本）
 
-内置 **200 个方法模板**，通过 `MethodTemplate` 枚举选择。此配置需要包含该功能的插件版本；仓库 demo 默认引用已发布的版本，测试本地修改时需使用本地插件产物。
+内置 **200 个方法模板**，通过 `MethodTemplate` 枚举选择。此配置需要包含该功能的插件版本；仓库 demo 引用下游插件坐标，首次发布前需先发布到本地 Maven。发布与接入步骤见 [Maven Central 发布指南](docs/PUBLISHING.md)。
 
 ```kotlin
 import cn.hx.plugin.junkcode.template.MethodTemplate

@@ -1,3 +1,4 @@
+// Downstream modification, 2026-11-02: allow standalone plugin publishing.
 pluginManagement {
     repositories {
         mavenLocal()
@@ -23,4 +24,7 @@ dependencyResolutionManagement {
 
 rootProject.name = "AndroidJunkCode"
 include(":library")
-include(":app")
+// Build/publish the plugin before its first remote release without resolving the demo plugin.
+if (!providers.gradleProperty("skipDemo").map { it.toBoolean() }.getOrElse(false)) {
+    include(":app")
+}
