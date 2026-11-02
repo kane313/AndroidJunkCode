@@ -1,3 +1,7 @@
+// Downstream modification of qq549631030/AndroidJunkCode.
+// 2026-10-30: added template tests; 2026-11-02: package license and attribution files.
+// See LICENSE, NOTICE and MODIFICATIONS.md at the repository root.
+
 import com.vanniktech.maven.publish.MavenPublishBaseExtension
 
 plugins {
@@ -38,4 +42,13 @@ dependencies {
     compileOnly(libs.android.gradlePlugin.api)
     implementation(gradleKotlinDsl())
     implementation(libs.javapoet)
+    testImplementation(libs.junit)
+}
+
+// Carry attribution with binary, sources and documentation JARs.
+tasks.withType<org.gradle.jvm.tasks.Jar>().configureEach {
+    from(rootProject.layout.projectDirectory) {
+        include("LICENSE", "NOTICE", "MODIFICATIONS.md")
+        into("META-INF")
+    }
 }

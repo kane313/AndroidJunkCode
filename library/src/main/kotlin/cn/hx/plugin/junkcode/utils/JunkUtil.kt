@@ -1,6 +1,11 @@
+// Downstream modification of qq549631030/AndroidJunkCode.
+// 2026-10-30: route default method generation through selectable templates.
+// See LICENSE, NOTICE and MODIFICATIONS.md at the repository root.
+
 package cn.hx.plugin.junkcode.utils
 
 import cn.hx.plugin.junkcode.ext.JunkCodeConfig
+import cn.hx.plugin.junkcode.template.MethodTemplateGenerator
 import cn.hx.plugin.junkcode.template.ResTemplate
 import com.squareup.javapoet.ClassName
 import com.squareup.javapoet.JavaFile
@@ -11,7 +16,6 @@ import groovy.lang.Tuple3
 import groovy.lang.Tuple4
 import java.io.File
 import java.nio.file.Files
-import java.util.Date
 import java.util.Locale
 import javax.lang.model.element.Modifier
 import kotlin.random.Random
@@ -38,48 +42,6 @@ object JunkUtil {
             }
         }
         return sb.toString()
-    }
-
-    /**
-     * 生成随机方法
-     */
-    private fun generateMethods(methodBuilder: MethodSpec.Builder) {
-        when (random.nextInt(5)) {
-            0 -> {
-                methodBuilder.addStatement("long now = \$T.currentTimeMillis()", System::class.java)
-                    .beginControlFlow("if (\$T.currentTimeMillis() < now)", System::class.java)
-                    .addStatement(
-                        "\$T.out.println(\$S)", System::class.java, "Time travelling, woo hoo!"
-                    )
-                    .nextControlFlow("else if (\$T.currentTimeMillis() == now)", System::class.java)
-                    .addStatement("\$T.out.println(\$S)", System::class.java, "Time stood still!")
-                    .nextControlFlow("else").addStatement(
-                        "\$T.out.println(\$S)", System::class.java, "Ok, time still moving forward"
-                    ).endControlFlow()
-            }
-
-            1 -> {
-                methodBuilder.addCode("" + "int total = 0;\n" + "for (int i = 0; i < 10; i++) {\n" + "  total += i;\n" + "}\n")
-            }
-
-            2 -> {
-                methodBuilder.beginControlFlow("try")
-                    .addStatement("throw new Exception(\$S)", "Failed")
-                    .nextControlFlow("catch (\$T e)", Exception::class.java)
-                    .addStatement("throw new \$T(e)", RuntimeException::class.java).endControlFlow()
-            }
-
-            3 -> {
-                methodBuilder.returns(Date::class.java)
-                    .addStatement("return new \$T()", Date::class.java)
-            }
-
-            else -> {
-                methodBuilder.addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                    .addParameter(String::class.java, "args")
-                    .addStatement("\$T.out.println(\$S)", System::class.java, "Hello")
-            }
-        }
     }
 
     /**
@@ -154,7 +116,7 @@ object JunkUtil {
                         } ?: generateName(j)
                         val methodBuilder = MethodSpec.methodBuilder(methodName)
                         config.methodGenerator?.execute(methodBuilder) ?: run {
-                            generateMethods(methodBuilder)
+                            MethodTemplateGenerator.generate(methodBuilder, config.methodTemplates, random)
                         }
                         typeBuilder.addMethod(methodBuilder.build())
                     }
@@ -187,7 +149,7 @@ object JunkUtil {
                         }.toString()
                     } ?: generateName(j)
                     val methodBuilder = MethodSpec.methodBuilder(methodName)
-                    config.methodGenerator?.execute(methodBuilder) ?: generateMethods(methodBuilder)
+                    config.methodGenerator?.execute(methodBuilder) ?: MethodTemplateGenerator.generate(methodBuilder, config.methodTemplates, random)
                     typeBuilder.addMethod(methodBuilder.build())
                 }
             }

@@ -1,0 +1,21 @@
+AndroidJunkCode — downstream distribution
+
+Upstream project: AndroidJunkCode
+Upstream repository: https://github.com/qq549631030/AndroidJunkCode
+Upstream developer, as identified by its publishing metadata: huangx (qq549631030)
+Upstream developer URL: https://github.com/qq549631030/
+Base commit: cfcd9eed0b8d5a938033a9268a20e58e059b3039
+
+The upstream library/gradle.properties at that commit declares the
+Apache License, Version 2.0. A copy of the official license text is
+included in LICENSE. No standalone LICENSE or NOTICE file was present
+in that base commit.
+
+This NOTICE was added by the downstream maintainers; it is not an
+upstream-provided NOTICE. This distribution includes downstream changes,
+including 200 selectable method templates, tests and generated-output
+cleanup. See MODIFICATIONS.md for details.
+
+The upstream attribution and license metadata have been retained.
+This downstream distribution does not imply endorsement by the upstream
+author. This notice is informational and does not alter the license.

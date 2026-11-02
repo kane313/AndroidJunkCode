@@ -1,3 +1,7 @@
+// Downstream modification of qq549631030/AndroidJunkCode.
+// 2026-10-30: recursively clean generated output before regeneration.
+// See LICENSE, NOTICE and MODIFICATIONS.md at the repository root.
+
 package cn.hx.plugin.junkcode.task
 
 import cn.hx.plugin.junkcode.ext.JunkCodeConfig
@@ -28,7 +32,10 @@ abstract class GenerateJunkCodeTask : DefaultTask() {
 
     @TaskAction
     fun taskAction() {
-        outputFolder.get().asFile.delete()
+        val outputDirectory = outputFolder.get().asFile
+        check(!outputDirectory.exists() || outputDirectory.deleteRecursively()) {
+            "Cannot clean generated junk code directory: $outputDirectory"
+        }
         packageList.clear()
         activityList.clear()
         val junkCodeConfig = config.get()

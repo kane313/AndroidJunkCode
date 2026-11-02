@@ -1,5 +1,10 @@
+// Downstream modification of qq549631030/AndroidJunkCode.
+// 2026-10-30: added enum-based method template selection.
+// See LICENSE, NOTICE and MODIFICATIONS.md at the repository root.
+
 package cn.hx.plugin.junkcode.ext
 
+import cn.hx.plugin.junkcode.template.MethodTemplate
 import com.squareup.javapoet.MethodSpec
 import com.squareup.javapoet.TypeSpec
 import groovy.lang.Tuple2
@@ -28,6 +33,14 @@ open class JunkCodeConfig(@Internal val name: String) {
 
     @Input
     var methodCountPerClass: Int = 0
+
+    /**
+     * One template fixes the method body; multiple templates form a random selection pool.
+     * Empty (the default) randomly selects from all 200 templates for each generated method.
+     * Ignored when typeGenerator or methodGenerator supplies the implementation.
+     */
+    @get:Input
+    var methodTemplates: List<MethodTemplate> = emptyList()
 
     @Input
     var resPrefix: String = "junk_"
