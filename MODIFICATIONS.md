@@ -38,3 +38,8 @@ NOTICE 是下游新增的来源说明，不是原作者提供的文件，也不�
 - 发布凭据及私钥仅存放于用户目录或环境变量，不纳入仓库。
 - `settings.gradle.kts`、`build.gradle.kts`：新增 `skipDemo` 开关并延迟 demo 插件解析，支持首次发布前构建。
 - `gradle/libs.versions.toml`：demo 引用下游插件；`docs/PUBLISHING.md`：记录安全凭据配置、发布与接入步骤。
+
+## 2026-11-03：已发布版本接入说明
+
+- `README.md`：提供 Maven Central 接入、Kotlin/Groovy 配置、枚举选择、变体名称与旧插件迁移说明。
+- `docs/PUBLISHING.md`：记录远程发布验证结果，区分团队使用步骤与维护者发布流程。

@@ -1,4 +1,4 @@
-<!-- Downstream modifications: template documentation added 2026-10-30; attribution added 2026-11-02. See MODIFICATIONS.md. -->
+<!-- Downstream modifications: template documentation added 2026-10-30; attribution added 2026-11-02; Central integration updated 2026-11-03. See MODIFICATIONS.md. -->
 
 # Android垃圾代码生成插件
 
@@ -9,43 +9,132 @@
 来源核验依据及本地修改详见 [NOTICE](NOTICE) 和 [MODIFICATIONS.md](MODIFICATIONS.md)。这两份说明由下游新增，不代表上游作者认可本版本。
 插件实现包和源码包会在 `META-INF/` 中携带许可、来源及修改说明。
 
-此插件用于做马甲包时，减小马甲包与主包的代码相似度，避免被某些应用市场识别为马甲包。
+## 接入已发布版本
 
-使用方法见[wiki](https://github.com/qq549631030/AndroidJunkCode/wiki)
+本插件在 Android 构建时生成 Java 类、Activity 和资源，支持 **200 个可选方法模板**。
+`2.0.0-team.1` 已发布到 **Maven Central**，已通过仅使用 Central 的独立工程解析验证。
+团队使用者无需 Central 账号、Token、签名密钥或本地发布。
 
+- 插件 ID：`io.github.kane313.android-junk-code`
+- 版本：`2.0.0-team.1`
+- 实现坐标：`io.github.kane313:android-junk-code:2.0.0-team.1`（由插件自动解析，不要添加为 App 的 `implementation` 依赖）
+- [Central 产物目录](https://repo.maven.apache.org/maven2/io/github/kane313/android-junk-code/2.0.0-team.1/)
 
-## 方法模板选择（源码版本）
+### 1. 配置插件仓库
 
-内置 **200 个方法模板**，通过 `MethodTemplate` 枚举选择。此配置需要包含该功能的插件版本；仓库 demo 引用下游插件坐标，首次发布前需先发布到本地 Maven。发布与接入步骤见 [Maven Central 发布指南](docs/PUBLISHING.md)。
+在项目根目录 `settings.gradle.kts` 的现有 `pluginManagement.repositories` 中加入 `mavenCentral()`：
+
+```kotlin
+pluginManagement {
+    repositories {
+        google()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+}
+```
+
+仅在普通依赖的 `repositories` 或 `dependencyResolutionManagement` 中添加 Central 不够。
+保留项目原有的其他仓库和配置，无需添加 `mavenLocal()`、JitPack 或 GitHub Packages。
+
+### 2. 应用插件并配置生成范围
+
+以下示例放到 Android 应用模块的 `app/build.gradle.kts`。保留项目现有的 Android 插件版本配置及 `android { ... }`；若已应用 `com.android.application`，无需重复添加。
 
 ```kotlin
 import cn.hx.plugin.junkcode.template.MethodTemplate
+
+plugins {
+    id("com.android.application")
+    id("io.github.kane313.android-junk-code") version "2.0.0-team.1"
+}
 
 androidJunkCode {
     variantConfig {
         create("release") {
             packageBase = "com.example.generated"
             packageCount = 2
+            activityCountPerPackage = 2
             otherCountPerPackage = 10
             methodCountPerClass = 20
+            resPrefix = "junk_"
+            drawableCount = 10
+            stringCount = 10
 
-            // 单个枚举：所有默认生成的方法均使用此模板。
-            methodTemplates = listOf(MethodTemplate.STRING_REVERSE)
-
-            // 或指定多个模板：每个方法从这些模板中随机选一个。
-            // methodTemplates = listOf(
-            //     MethodTemplate.STRING_REVERSE,
-            //     MethodTemplate.ARRAY_SUM,
-            //     MethodTemplate.MAP_WORD_FREQUENCY
-            // )
-
-            // 不设置或设置 emptyList()：每个方法从全部 200 个模板中随机选择。
+            // 不设置 methodTemplates：每个方法从全部 200 个模板随机选择。
         }
     }
 }
 ```
 
-Groovy DSL 可写为 `methodTemplates = [MethodTemplate.STRING_REVERSE, MethodTemplate.ARRAY_SUM]`，并添加同样的 import。
+`release` 是构建变体的完整名称。只配置 `release` 时，debug 构建不会生成；使用 flavor 时应写实际变体名，例如 `prodRelease`。
+生成目录为 `app/build/generated/source/junk/release/`，源码、资源、Manifest 和保留规则会自动接入构建。
+
+### 3. 选择模板（可选）
+
+在上例 `create("release") { ... }` 内按需添加以下配置，三种写法选一种：
+
+```kotlin
+// 固定使用一种模板
+methodTemplates = listOf(MethodTemplate.STRING_REVERSE)
+
+// 或：每个方法从指定集合中随机选择
+methodTemplates = listOf(
+    MethodTemplate.STRING_REVERSE,
+    MethodTemplate.ARRAY_SUM,
+    MethodTemplate.MAP_WORD_FREQUENCY
+)
+
+// 或：恢复从全部 200 个模板随机选择，与不设置相同
+methodTemplates = emptyList()
+```
+
+### 4. 构建验证
+
+```bash
+bash gradlew :app:assembleRelease
+```
+
+检查生成目录和构建结果。业务项目不需要设置 `PLUGIN_ENABLE`，它只是本仓库 demo 自己定义的开关。
+仓库 demo 可运行 `bash gradlew :app:assembleRelease -PPLUGIN_ENABLE=true`。
+
+已验证环境：JDK 17、Gradle 9.3.1、Android Gradle Plugin 9.0.0。其他组合需在目标项目验证，不据此声明兼容全部旧版 Gradle/AGP。
+
+### Groovy DSL
+
+使用 `settings.gradle` 时，`pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }` 同样适用。
+应用模块 `app/build.gradle` 中的对应配置如下，Android 插件版本仍沿用现有项目配置：
+
+```groovy
+import cn.hx.plugin.junkcode.template.MethodTemplate
+
+plugins {
+    id 'com.android.application'
+    id 'io.github.kane313.android-junk-code' version '2.0.0-team.1'
+}
+
+androidJunkCode {
+    variantConfig {
+        release {
+            packageBase = 'com.example.generated'
+            packageCount = 2
+            otherCountPerPackage = 10
+            methodCountPerClass = 20
+            // 删除此行即可从全部模板随机选择。
+            methodTemplates = [MethodTemplate.STRING_REVERSE, MethodTemplate.ARRAY_SUM]
+        }
+    }
+}
+```
+
+### 从原作者版本迁移
+
+将插件 ID `io.github.qq549631030.android-junk-code` 替换为 `io.github.kane313.android-junk-code`，版本改为 `2.0.0-team.1`；不要同时应用两个插件。
+如果使用 `libs.versions.toml`，修改对应插件条目即可；若根项目使用 `apply false` 声明版本，同步更新根项目声明，模块沿用不带版本的插件引用。
+扩展名称仍是 `androidJunkCode`，Kotlin 包名仍是 `cn.hx.plugin.junkcode`，已有配置和自定义回调可以继续使用。
+从 `buildscript classpath` 方式迁移时，也要移除旧插件依赖，避免新旧类同时出现在构建脚本 classpath 中。
+
+## 模板行为说明
 
 - 普通类和 Activity 的额外方法都使用此配置；Activity 的 `onCreate()` 不受影响。
 - `typeGenerator` 优先于 `methodGenerator`，两者提供实现时跳过默认模板选择。
@@ -59,6 +148,9 @@ Groovy DSL 可写为 `methodTemplates = [MethodTemplate.STRING_REVERSE, MethodTe
 
 运行 `bash gradlew :library:test` 可验证全部模板的 Java 8 编译、运行及选择规则。
 
+其他原有配置可参考[上游 wiki](https://github.com/qq549631030/AndroidJunkCode/wiki)；下游插件坐标和模板参数以本文为准。
+发布维护步骤见 [Maven Central 发布指南](docs/PUBLISHING.md)。
+
 使用插件[methodCount](https://github.com/KeepSafe/dexcount-gradle-plugin)对比
 
 |                               | 方法总数                             | 项目方法数                               |
@@ -66,6 +158,7 @@ Groovy DSL 可写为 `methodTemplates = [MethodTemplate.STRING_REVERSE, MethodTe
 | 未加垃圾代码<br/><br/>项目代码占比 0.13%  | ![方法总数](images/before_total.jpg) | ![项目方法数](images/before_project.jpg) |
 | 加了垃圾代码<br/><br/>项目代码占比 52.93% | ![方法总数](images/after_total.jpg)  | ![项目方法数](images/after_project.jpg)  |
 
-安利我的两个新库：  
+原作者的相关项目：
+
 [PriorityDialog](https://github.com/qq549631030/PriorityDialog)（带优先级对话框实现）  
 [ActivityResultApi](https://github.com/qq549631030/ActivityResultApi)（Activity Result Api封装，支持免注册调用）

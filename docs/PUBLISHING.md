@@ -6,7 +6,8 @@
 - 插件 ID：`io.github.kane313.android-junk-code`
 - 版本由 `library/gradle.properties` 中的 `VERSION_NAME` 管理。
 - 同时发布实现包和插件 marker；POM 包含维护者、上游作者、许可证和 SCM 信息。
-- 本说明是发布流程，不表示版本已经在 Central 上线。以 Portal 的 PUBLISHED 状态及远程解析验证为准。
+- `2.0.0-team.1` 已发布：2026-11-03 确认 Portal 状态为 `PUBLISHED`，实现包和 marker POM 返回 HTTP 200，独立工程仅通过 Maven Central 解析并验证 200 个模板。
+- 团队使用者请直接阅读 [README 接入说明](../README.md#接入已发布版本)，不需要配置下文的发布凭据。
 
 ## 发布凭据
 
@@ -26,7 +27,7 @@ signing.secretKeyRingFile=<加密的私钥 keyring 绝对路径>
 
 ## 验证与发布
 
-首次发布前 demo 无法从 Central 获取此版本，可用 `skipDemo` 只构建插件：
+开发尚未发布的新版本时，先递增 `VERSION_NAME` 并同步版本目录中的 `junkCode`，再用 `skipDemo` 构建插件并发布本地测试产物：
 
 ```bash
 bash gradlew :library:build :library:publishToMavenLocal -PskipDemo=true
@@ -51,27 +52,6 @@ bash gradlew :library:publishToMavenCentral -PskipDemo=true
 
 ## 团队项目接入
 
-在 `settings.gradle.kts` 的插件仓库中添加 Central：
-
-```kotlin
-pluginManagement {
-    repositories {
-        mavenCentral()
-        google()
-        gradlePluginPortal()
-    }
-}
-```
-
-在应用模块使用插件，Android application 插件应先应用：
-
-```kotlin
-plugins {
-    id("com.android.application")
-    id("io.github.kane313.android-junk-code") version "2.0.0-team.1"
-}
-```
-
-模板 API 的 Kotlin 包名仍为 `cn.hx.plugin.junkcode.template.MethodTemplate`。
-本仓库 demo 的版本目录已经指向下游插件，发布前可由 `mavenLocal()` 解析本地验证产物。
-最终上线验证应在不启用 `mavenLocal()` 的环境解析，避免把本地成功误认为远程发布成功。
+完整的 Kotlin DSL、Groovy DSL、模板选择、构建命令和旧版迁移步骤统一维护在 [README 接入说明](../README.md#接入已发布版本)。
+已发布版本直接从 Maven Central 获取，无需 `mavenLocal()` 或下载仓库源码。
+发布后仍需在不启用 `mavenLocal()` 的环境验证，避免把本地成功误认为远程发布成功。
