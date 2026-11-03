@@ -12,13 +12,13 @@
 ## 接入已发布版本
 
 本插件在 Android 构建时生成 Java 类、Activity 和资源，支持 **200 个可选方法模板**。
-`2.0.0-team.1` 已发布到 **Maven Central**，已通过仅使用 Central 的独立工程解析验证。
+`2.0.0-team.2` 是面向旧版 Gradle 的兼容修复版本，发布仓库为 **Maven Central**。
 团队使用者无需 Central 账号、Token、签名密钥或本地发布。
 
 - 插件 ID：`io.github.kane313.android-junk-code`
-- 版本：`2.0.0-team.1`
-- 实现坐标：`io.github.kane313:android-junk-code:2.0.0-team.1`（由插件自动解析，不要添加为 App 的 `implementation` 依赖）
-- [Central 产物目录](https://repo.maven.apache.org/maven2/io/github/kane313/android-junk-code/2.0.0-team.1/)
+- 版本：`2.0.0-team.2`
+- 实现坐标：`io.github.kane313:android-junk-code:2.0.0-team.2`（由插件自动解析，不要添加为 App 的 `implementation` 依赖）
+- [Central 产物目录](https://repo.maven.apache.org/maven2/io/github/kane313/android-junk-code/2.0.0-team.2/)
 
 ### 1. 配置插件仓库
 
@@ -46,7 +46,7 @@ import cn.hx.plugin.junkcode.template.MethodTemplate
 
 plugins {
     id("com.android.application")
-    id("io.github.kane313.android-junk-code") version "2.0.0-team.1"
+    id("io.github.kane313.android-junk-code") version "2.0.0-team.2"
 }
 
 androidJunkCode {
@@ -98,7 +98,18 @@ bash gradlew :app:assembleRelease
 检查生成目录和构建结果。业务项目不需要设置 `PLUGIN_ENABLE`，它只是本仓库 demo 自己定义的开关。
 仓库 demo 可运行 `bash gradlew :app:assembleRelease -PPLUGIN_ENABLE=true`。
 
-已验证环境：JDK 17、Gradle 9.3.1、Android Gradle Plugin 9.0.0。其他组合需在目标项目验证，不据此声明兼容全部旧版 Gradle/AGP。
+### 兼容性与旧项目升级
+
+`2.0.0-team.2` 使用 Kotlin 1.6.21 编译、Java 11 字节码，并针对 Gradle 7.4 API 构建。插件使用方不需要把自己的 Kotlin 插件改成 1.6.21；项目自身的 Gradle、AGP 与 JDK 仍需相互匹配。
+
+| Gradle | AGP | 运行 JDK | 验证范围 |
+| --- | --- | --- | --- |
+| 7.4 | 7.3.0 | 11、17 | Kotlin DSL、模板枚举、生成源码/资源/Manifest、release 混淆打包 |
+| 9.3.1 | 9.0.0 | 17 | 仓库 demo 的 release 生成与打包 |
+
+旧版本 `2.0.0-team.1` 使用 Kotlin 2.3.10 和 Java 17。在 Gradle 7.4 中，即使切换到 JDK 17，也可能出现 `Protocol message contained an invalid tag (zero).`。请将插件版本升级到 `2.0.0-team.2`；`resolutionStrategy` 映射和清理缓存无法改变旧产物的字节码或 Kotlin 元数据。
+
+AGP 7.3.x 与 Gradle 7.4 是本次验证的旧版组合；AGP 7.4.x 本身要求 Gradle 7.5。其他组合仍需在目标项目验证。维护者可运行 [兼容性验证工程](compatibility/gradle74/README.md)。
 
 ### Groovy DSL
 
@@ -110,7 +121,7 @@ import cn.hx.plugin.junkcode.template.MethodTemplate
 
 plugins {
     id 'com.android.application'
-    id 'io.github.kane313.android-junk-code' version '2.0.0-team.1'
+    id 'io.github.kane313.android-junk-code' version '2.0.0-team.2'
 }
 
 androidJunkCode {
@@ -129,7 +140,7 @@ androidJunkCode {
 
 ### 从原作者版本迁移
 
-将插件 ID `io.github.qq549631030.android-junk-code` 替换为 `io.github.kane313.android-junk-code`，版本改为 `2.0.0-team.1`；不要同时应用两个插件。
+将插件 ID `io.github.qq549631030.android-junk-code` 替换为 `io.github.kane313.android-junk-code`，版本改为 `2.0.0-team.2`；不要同时应用两个插件。
 如果使用 `libs.versions.toml`，修改对应插件条目即可；若根项目使用 `apply false` 声明版本，同步更新根项目声明，模块沿用不带版本的插件引用。
 扩展名称仍是 `androidJunkCode`，Kotlin 包名仍是 `cn.hx.plugin.junkcode`，已有配置和自定义回调可以继续使用。
 从 `buildscript classpath` 方式迁移时，也要移除旧插件依赖，避免新旧类同时出现在构建脚本 classpath 中。

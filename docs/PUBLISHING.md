@@ -2,7 +2,7 @@
 
 维护仓库：https://github.com/kane313/AndroidJunkCode
 
-- 实现坐标：`io.github.kane313:android-junk-code:2.0.0-team.1`
+- 实现坐标：`io.github.kane313:android-junk-code:2.0.0-team.2`
 - 插件 ID：`io.github.kane313.android-junk-code`
 - 版本由 `library/gradle.properties` 中的 `VERSION_NAME` 管理。
 - 同时发布实现包和插件 marker；POM 包含维护者、上游作者、许可证和 SCM 信息。
@@ -35,6 +35,10 @@ bash gradlew :app:assembleRelease -PPLUGIN_ENABLE=true
 ```
 
 第一条命令会使用用户目录中的签名配置。仅本地验证且没有密钥时，可额外传入 `-PsignAllPublications=false`，不要用于正式发布。
+
+发布构建仍使用仓库的 Gradle 9.3.1 和 JDK 17，但 `library` 用隔离的 Kotlin 1.6.21 编译器、Gradle 7.4 API 和 Java 11 目标构建。不要直接改回使用发布环境内嵌的 Kotlin/Gradle API，否则旧项目会再次出现元数据解析错误。
+
+发布前按 [兼容性验证工程](../compatibility/gradle74/README.md) 分别在 JDK 11、17 下运行 Gradle 7.4 的 release 构建，再运行当前 demo。检查产物的 JVM 版本为 11，运行时依赖没有重新引入 Kotlin 2.x。
 
 上传、验证并自动发布：
 

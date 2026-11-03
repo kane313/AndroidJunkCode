@@ -1,9 +1,10 @@
 # Downstream modification, 2026-11-02: consume the fork plugin coordinate.
+# 2026-11-03: lower the plugin API baseline and consume team.2.
 [versions]
 agp = "9.0.0"
 javapoet = "1.13.0"
 # @pin 最低支持AGP版本
-gradleApi = "7.4.0"
+gradleApi = "7.3.0"
 kotlin = "2.3.10"
 coreKtx = "1.17.0"
 junit = "4.13.2"
@@ -13,7 +14,7 @@ appcompat = "1.7.1"
 material = "1.13.0"
 activity = "1.12.4"
 constraintlayout = "2.2.1"
-junkCode = "2.0.0-team.1"
+junkCode = "2.0.0-team.2"
 #junkCode = "1.3.4"
 dexcount = "4.0.0"
 mavemPublish = "0.36.0"

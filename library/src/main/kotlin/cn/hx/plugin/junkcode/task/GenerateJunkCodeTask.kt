@@ -1,5 +1,6 @@
 // Downstream modification of qq549631030/AndroidJunkCode.
 // 2026-10-30: recursively clean generated output before regeneration.
+// 2026-11-03: expose stable generated source properties for AGP 7.3.
 // See LICENSE, NOTICE and MODIFICATIONS.md at the repository root.
 
 package cn.hx.plugin.junkcode.task
@@ -26,6 +27,17 @@ abstract class GenerateJunkCodeTask : DefaultTask() {
     @get:OutputDirectory
     abstract val outputFolder: DirectoryProperty
 
+    @get:OutputDirectory
+    abstract val javaOutputDirectory: DirectoryProperty
+
+    @get:OutputDirectory
+    abstract val resourceOutputDirectory: DirectoryProperty
+
+    init {
+        javaOutputDirectory.convention(outputFolder.dir("java"))
+        resourceOutputDirectory.convention(outputFolder.dir("res"))
+    }
+
     private val packageList = mutableListOf<String>()
 
     private val activityList = mutableListOf<String>()
@@ -39,8 +51,8 @@ abstract class GenerateJunkCodeTask : DefaultTask() {
         packageList.clear()
         activityList.clear()
         val junkCodeConfig = config.get()
-        val javaDir = outputFolder.dir("java").get().asFile
-        val resDir = outputFolder.dir("res").get().asFile
+        val javaDir = javaOutputDirectory.get().asFile
+        val resDir = resourceOutputDirectory.get().asFile
         val manifestOutputFile = outputFolder.file("AndroidManifest.xml").get().asFile
         val proguardOutputFile = outputFolder.file("proguard-rules.pro").get().asFile
         junkCodeConfig.javaGenerator?.execute(javaDir) ?: run {
