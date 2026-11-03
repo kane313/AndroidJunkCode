@@ -7,6 +7,7 @@
 - 版本由 `library/gradle.properties` 中的 `VERSION_NAME` 管理。
 - 同时发布实现包和插件 marker；POM 包含维护者、上游作者、许可证和 SCM 信息。
 - `2.0.0-team.1` 已发布：2026-11-03 确认 Portal 状态为 `PUBLISHED`，实现包和 marker POM 返回 HTTP 200，独立工程仅通过 Maven Central 解析并验证 200 个模板。
+- `2.0.0-team.2` 已发布（2026-11-03）：部署 `10cffbbe-ee13-429c-a9f1-fe79034e3b99`，修复 Gradle 7.4 / Java 11 兼容性；实现包与 marker 均可从 Central 下载；禁用 `mavenLocal()` 后，Gradle 7.4 / AGP 7.3.0 在 JDK 11、17 下均通过 release 混淆打包。
 - 团队使用者请直接阅读 [README 接入说明](../README.md#接入已发布版本)，不需要配置下文的发布凭据。
 
 ## 发布凭据

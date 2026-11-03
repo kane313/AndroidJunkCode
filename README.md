@@ -12,7 +12,7 @@
 ## 接入已发布版本
 
 本插件在 Android 构建时生成 Java 类、Activity 和资源，支持 **200 个可选方法模板**。
-`2.0.0-team.2` 是面向旧版 Gradle 的兼容修复版本，发布仓库为 **Maven Central**。
+`2.0.0-team.2` 已发布到 **Maven Central**，修复旧版 Gradle/Kotlin 和 Java 11 兼容问题。
 团队使用者无需 Central 账号、Token、签名密钥或本地发布。
 
 - 插件 ID：`io.github.kane313.android-junk-code`
@@ -109,7 +109,7 @@ bash gradlew :app:assembleRelease
 
 旧版本 `2.0.0-team.1` 使用 Kotlin 2.3.10 和 Java 17。在 Gradle 7.4 中，即使切换到 JDK 17，也可能出现 `Protocol message contained an invalid tag (zero).`。请将插件版本升级到 `2.0.0-team.2`；`resolutionStrategy` 映射和清理缓存无法改变旧产物的字节码或 Kotlin 元数据。
 
-AGP 7.3.x 与 Gradle 7.4 是本次验证的旧版组合；AGP 7.4.x 本身要求 Gradle 7.5。其他组合仍需在目标项目验证。维护者可运行 [兼容性验证工程](compatibility/gradle74/README.md)。
+AGP 7.3.x 与 Gradle 7.4 是本次验证的旧版组合；[AGP 7.4.x 本身要求 Gradle 7.5](https://developer.android.com/build/releases/agp-7-4-0-release-notes)。其他组合仍需在目标项目验证。维护者可运行 [兼容性验证工程](compatibility/gradle74/README.md)。
 
 ### Groovy DSL
 
